@@ -1,0 +1,16 @@
+FTDI is a company producing chip for converting Serial protocol (RX, TX) to USB signals.
+
+<Screenshot in working state with red LED on>
+
+The YP-05 module has power switch, which gives output of 4.80 or 3.46 <Screenshot>. So its better not to use it as power supply source.
+
+In order to test it send data from one port to anther using FTDI board and Arduino. <Schematics>
+From USB it goes to ftdi, from ftdi to arduino pins 2 and 3. from arduino it goes to second USB port.
+
+Upload the sketch.
+
+SoftwareSerial does not work correctly with 115200. Hence, use 9600.
+
+In my case those USBs are COM3 and COM4
+
+open two Serial Monitors for both ports
