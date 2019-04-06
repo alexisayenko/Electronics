@@ -1,0 +1,2 @@
+Resistor has to be 2.2 kOhm, otherwise measurements won't be accurate
+Also added coefficient to adjust with xiaomi sensors
