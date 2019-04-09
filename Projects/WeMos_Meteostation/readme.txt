@@ -1,0 +1,1 @@
+When building, select Tools->Board->Wemos D1 R1
