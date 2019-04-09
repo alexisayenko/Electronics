@@ -11,9 +11,9 @@
 
 class RollingAverage{
   private:
-    const int size = 10;
+    const int size = 50;
     const int empty_value = -100;
-    float values[10];
+    float values[50];
   
   public:
   RollingAverage(){
@@ -66,11 +66,16 @@ class RollingAverage{
 
 };
 
-
 WiFiClient espClient;
 PubSubClient mqttClient(espClient);
+const float TOLERANCE = 0.5;
 
 RollingAverage rollingAverage;
+
+bool isValueChanged(float value1, float value2){
+  return abs(value1 - value2) > TOLERANCE;
+}
+
 
 void setup() {
   Serial.begin(9600);     
@@ -105,7 +110,20 @@ void loop() {
   digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
   delay(1000);    
 
-  mqttClient.loop();
+if (mqttClient.state() != 0){
+
+  Serial.print("Trying to reconnect to mqtt server");
+  while (mqttClient.state() != 0){
+    Serial.print(".");
+    mqttClient.connect("ESP8266Client");    
+  }
+  
+  Serial.println();
+  Serial.println("Reconnected");
+  }
+
+mqttClient.loop();
+
 
   float initial_volts = 5.00;
   int pin = A0;
@@ -132,8 +150,8 @@ void loop() {
 
   
 
-  if (current_averageTemperature != previous_averageTemperature){
-
+  if (isValueChanged(current_averageTemperature, previous_averageTemperature)){
+    Serial.println("Value changed more than toleralnce level");
     previous_averageTemperature = rollingAverage.getAverage();
     String payload = "{ \"data\": { \"temperature\" : " + String(current_averageTemperature) + "} }";
     mqttClient.publish("wemos", payload.c_str(), true);
