@@ -80,9 +80,13 @@ WiFiClient espClient;
 PubSubClient mqttClient(espClient);
 RollingAverage rollingAverage;
 // ESP8266WebServer server(80);
-
+const float INITIAL_VOLTAGE = 5.0;
+const float CORRECTION_COEFFICIENT = 0;
 const float TOLERANCE = 0.3; // In Volts
 const int DELAY_TIME = 5; // Delay time in seconds for loop
+
+int counter = 0;
+float previous_averageTemperature = -100;
 
 bool isValueChanged(float value1, float value2){
   return abs(value1 - value2) > TOLERANCE;
@@ -126,12 +130,32 @@ void setup() {
 //  server.on("/on", getInfo);
 }
 
-void getInfo(){
-//  server.println("hello");
-}
+void reportToWifClient(){
+ WiFiClient wifiClient = wifiServer.available();
+  if (wifiClient.available()){
+//     String httpRequest = client.readStringUntil('\r');
+//     client.flush();
 
-int counter = 0;
-float previous_averageTemperature = -100;
+    wifiClient.println("HTTP/1.1 200 OK");
+    wifiClient.println("Content-Type: text/html");
+    wifiClient.println(""); //  do not forget this one
+    wifiClient.println("<!DOCTYPE HTML>");
+    wifiClient.println("<html>");
+    
+    wifiClient.print("Counter: " + String(counter++) + "<br/>");
+    wifiClient.print("Current Temperature: " + String(current_temperature) + " C" + "<br/>");   
+    wifiClient.print("Average Temperature: " + String(current_averageTemperature) + " C" + "<br/>");
+    wifiClient.print("MQTT Client State: " + String(mqttClient.state()) + "<br/>"); 
+    wifiClient.print("WiFi State: " + getWifiStatus() + "<br/>");
+    wifiClient.print("<br/><br/>");
+
+    String rollingAverageString = rollingAverage.getArrayString();
+    rollingAverageString.replace(" ", "&emsp;");
+    wifiClient.print("Rolling Average Array: " + rollingAverageString + "<br/>");
+    
+    wifiClient.println("</html>");    
+  }
+}
 
 void blinkLed(){
   digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
@@ -153,26 +177,6 @@ void checkConnectionAndReconnectIfNeeded(){
     Serial.println("Reconnected");
   }  
 }
-//
-//class Measurement{
-//
-//  private:
-//    const float INITIAL_VOLTAGE = 5.0;
-//    const float CORRECTION_COEFFICIENT = 0;
-//    
-//  public:
-//    float voltage;
-//    float temperature;
-//    
-//    Measurement(float analog_pin_raw_value){
-//      analog_pin_raw_value /= 1.65; // not sure why.
-//      voltage = INITIAL_VOLTAGE * analog_pin_raw_value / 1024;
-//      temperature = volgage / 0.01 - 273.14 + CORRECTION_COEFFICIENT;      
-//    }
-//};
-
-const float INITIAL_VOLTAGE = 5.0;
-const float CORRECTION_COEFFICIENT = 0;
 
 float getTemperature(float analog_pin_raw_value){
   analog_pin_raw_value /= 1.65; // not sure why.
@@ -212,32 +216,7 @@ void loop() {
   Serial.println("-----");
   delay(DELAY_TIME*1000);  
 
-  
-   WiFiClient wifiClient = wifiServer.available();
-  if (wifiClient.available()){
-//     String httpRequest = client.readStringUntil('\r');
-//     client.flush();
-
-    wifiClient.println("HTTP/1.1 200 OK");
-    wifiClient.println("Content-Type: text/html");
-    wifiClient.println(""); //  do not forget this one
-    wifiClient.println("<!DOCTYPE HTML>");
-    wifiClient.println("<html>");
-    
-    wifiClient.print("Counter: " + String(counter++) + "<br/>");
-    wifiClient.print("Current Temperature: " + String(current_temperature) + " C" + "<br/>");   
-    wifiClient.print("Average Temperature: " + String(current_averageTemperature) + " C" + "<br/>");
-    wifiClient.print("MQTT Client State: " + String(mqttClient.state()) + "<br/>"); 
-    wifiClient.print("WiFi State: " + getWifiStatus() + "<br/>");
-    wifiClient.print("<br/><br/>");
-
-    String rollingAverageString = rollingAverage.getArrayString();
-    // rollingAverageString.replace(" ", "&nbsp;&nbsp;");
-    wifiClient.print("Rolling Average Array: " + rollingAverageString + "<br/>");
-    
-    wifiClient.println("</html>");    
-  }
-
+  reportToWifiClient();
 }
 
 
@@ -245,3 +224,13 @@ void loop() {
 //
 //  Serial.println(topic);
 //}
+
+
+// todo:
+// - refactor - extract the rollingAverage into a class
+// - display real time from: http://worldclockapi.com/ (JSON)
+// - display last time sent values to MQTT broker
+// - send to MQTT broker at least every hour
+// - start wifi server with specifi IP, so it will be possible to configure Port Forwarding
+// - make loop delay less than 5 secs (so html page is more responsive), but read temperature values once every 5 or 10 secs.
+// - add light sensor
