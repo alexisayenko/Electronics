@@ -1,5 +1,6 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
+// #include <ESP8266WebServer.h>
 
 #define wifi_ssid "Alex"
 #define wifi_password "12345678"
@@ -51,6 +52,16 @@ class RollingAverage{
     return sum/count;
   }
 
+  String getArrayString(){
+    String result = "[";
+    for(int i = 0; i < size; i++){
+        result += (String(values[i]) + " ").c_str();
+      }
+    result += "]";
+
+    return result;
+  }
+
   void serialPrint(){
         
     Serial.print("rollingAverage: [");
@@ -68,6 +79,7 @@ class RollingAverage{
 WiFiClient espClient;
 PubSubClient mqttClient(espClient);
 RollingAverage rollingAverage;
+// ESP8266WebServer server(80);
 
 const float TOLERANCE = 0.3; // In Volts
 const int DELAY_TIME = 5; // Delay time in seconds for loop
@@ -75,6 +87,21 @@ const int DELAY_TIME = 5; // Delay time in seconds for loop
 bool isValueChanged(float value1, float value2){
   return abs(value1 - value2) > TOLERANCE;
 }
+
+String getWifiStatus(){
+  switch(WiFi.status()){
+    case WL_CONNECTED: return "WL_CONNECTED";
+    case WL_NO_SHIELD: return "WL_NO_SHIELD";
+    case WL_IDLE_STATUS: return "WL_IDLE_STATUS";
+    case WL_NO_SSID_AVAIL: return "WL_NO_SSID_AVAIL";
+    case WL_SCAN_COMPLETED: return "WL_SCAN_COMPLETED";
+    case WL_CONNECT_FAILED: return "WL_CONNECT_FAILED";
+    case WL_CONNECTION_LOST: return "WL_CONNECTION_LOST";
+    case WL_DISCONNECTED: return "WL_DISCONNECTED";
+  }
+}
+
+WiFiServer wifiServer(80);
 
 void setup() {
   Serial.begin(9600);     
@@ -94,6 +121,13 @@ void setup() {
   // mqttClient.setCallback(callback);           // callback function to execute when a MQTT message   
 
   mqttClient.connect("ESP8266Client");
+  wifiServer.begin();
+
+//  server.on("/on", getInfo);
+}
+
+void getInfo(){
+//  server.println("hello");
 }
 
 int counter = 0;
@@ -166,7 +200,7 @@ void loop() {
   
   Serial.println("rol avg: " + String(current_averageTemperature));
   Serial.println("mqtt state: " + String(mqttClient.state())); 
-  Serial.println("wifi state: " + String(WiFi.status()));
+  Serial.println("wifi state: " + getWifiStatus());
 
   if (isValueChanged(current_averageTemperature, previous_averageTemperature)){
     Serial.println("Value changed more than toleralnce level");
@@ -177,6 +211,33 @@ void loop() {
   
   Serial.println("-----");
   delay(DELAY_TIME*1000);  
+
+  
+   WiFiClient wifiClient = wifiServer.available();
+  if (wifiClient.available()){
+//     String httpRequest = client.readStringUntil('\r');
+//     client.flush();
+
+    wifiClient.println("HTTP/1.1 200 OK");
+    wifiClient.println("Content-Type: text/html");
+    wifiClient.println(""); //  do not forget this one
+    wifiClient.println("<!DOCTYPE HTML>");
+    wifiClient.println("<html>");
+    
+    wifiClient.print("Counter: " + String(counter++) + "<br/>");
+    wifiClient.print("Current Temperature: " + String(current_temperature) + " C" + "<br/>");   
+    wifiClient.print("Average Temperature: " + String(current_averageTemperature) + " C" + "<br/>");
+    wifiClient.print("MQTT Client State: " + String(mqttClient.state()) + "<br/>"); 
+    wifiClient.print("WiFi State: " + getWifiStatus() + "<br/>");
+    wifiClient.print("<br/><br/>");
+
+    String rollingAverageString = rollingAverage.getArrayString();
+    // rollingAverageString.replace(" ", "&nbsp;&nbsp;");
+    wifiClient.print("Rolling Average Array: " + rollingAverageString + "<br/>");
+    
+    wifiClient.println("</html>");    
+  }
+
 }
 
 
