@@ -61,19 +61,6 @@ class RollingAverage{
 
     return result;
   }
-
-  void serialPrint(){
-        
-    Serial.print("rollingAverage: [");
-
-    for(int i = 0; i < size; i++){
-      Serial.print((String(values[i]) + " ").c_str());
-    }
-    
-    Serial.println("]");
-  }
-
-
 };
 
 WiFiClient espClient;
@@ -130,7 +117,7 @@ void setup() {
 //  server.on("/on", getInfo);
 }
 
-void reportToWifClient(){
+void reportToWifiClient(float current_temperature, float current_averageTemperature){
  WiFiClient wifiClient = wifiServer.available();
   if (wifiClient.available()){
 //     String httpRequest = client.readStringUntil('\r');
@@ -199,7 +186,7 @@ void loop() {
 
   Serial.println("counter: " + String(counter++));
   Serial.println("cur temp: " + String(current_temperature));
-  rollingAverage.serialPrint();
+  Serial.println("rol avg: " + rollingAverage.getArrayString());
   float current_averageTemperature = rollingAverage.getAverage();
   
   Serial.println("rol avg: " + String(current_averageTemperature));
@@ -216,9 +203,8 @@ void loop() {
   Serial.println("-----");
   delay(DELAY_TIME*1000);  
 
-  reportToWifiClient();
+  reportToWifiClient(current_temperature, current_averageTemperature);
 }
-
 
 //void callback(char* topic, byte* payload, unsigned int length) {
 //
