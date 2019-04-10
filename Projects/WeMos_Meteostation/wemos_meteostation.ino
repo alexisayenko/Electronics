@@ -1,6 +1,6 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
-// #include <ESP8266WebServer.h>
+#include "RollingAverage.h"
 
 #define wifi_ssid "Alex"
 #define wifi_password "12345678"
@@ -8,60 +8,6 @@
 #define mqtt_server "192.168.0.7"
 #define mqtt_user "guest"      // if exist
 #define mqtt_password "guest"  //idem
-
-class RollingAverage{
-  private:
-    const int size = 50;
-    const int empty_value = -100;
-    float values[50];
-  
-  public:
-  RollingAverage(){
-    for(int i = 0; i<size; i++){
-      values[i] = empty_value;
-    }
-  }
-
-  void add(float value){
-    for (int i=size-1;i>0;i--){
-      values[i] = values[i-1];
-    }
-
-    values[0] = value;
-  }
-
-  float getAverage(){
-    float sum = 0;
-    int count = 0;
-
-    for(int i=0;i<size;i++){
-
-      if (values[i] == empty_value){
-
-        if (i == 0){
-          return empty_value;
-        }
-        
-        break;
-      }
-
-      sum += values[i];      
-      count = i+1;
-    }
-    
-    return sum/count;
-  }
-
-  String getArrayString(){
-    String result = "[";
-    for(int i = 0; i < size; i++){
-        result += (String(values[i]) + " ").c_str();
-      }
-    result += "]";
-
-    return result;
-  }
-};
 
 const float INITIAL_VOLTAGE = 5.0;
 const float CORRECTION_COEFFICIENT = 0;
@@ -148,6 +94,10 @@ float getTemperature(float analog_pin_raw_value){
   return temperature;
 }
 
+void reportToSerial(){
+  
+}
+
 void setup() {
   Serial.begin(9600);     
   pinMode(LED_BUILTIN, OUTPUT);     //Pin 2 for LED
@@ -181,12 +131,11 @@ void loop() {
 
   float current_temperature = getTemperature ((float) analogRead(A0));
   rollingAverage.add(current_temperature);
-
+  float current_averageTemperature = rollingAverage.getAverage();
+  
   Serial.println("counter: " + String(counter++));
   Serial.println("cur temp: " + String(current_temperature));
   Serial.println("rol avg: " + rollingAverage.getArrayString());
-  float current_averageTemperature = rollingAverage.getAverage();
-  
   Serial.println("rol avg: " + String(current_averageTemperature));
   Serial.println("mqtt state: " + String(mqttClient.state())); 
   Serial.println("wifi state: " + getWifiStatus());
