@@ -94,8 +94,13 @@ float getTemperature(float analog_pin_raw_value){
   return temperature;
 }
 
-void reportToSerial(){
-  
+void reportToSerial(float current_temperature, float current_averageTemperature){
+  Serial.println("Counter: " + String(counter++));
+  Serial.println("Current Temperature: " + String(current_temperature));
+  Serial.println("Average Temperature: " + String(current_averageTemperature));
+  Serial.println("MQTT State: " + String(mqttClient.state())); 
+  Serial.println("WiFi Status: " + getWifiStatus());
+  Serial.println("RollingAverage Array: " + rollingAverage.getArrayString());
 }
 
 void setup() {
@@ -121,6 +126,11 @@ void setup() {
 //  server.on("/on", getInfo);
 }
 
+void reportToMqttClient(float current_averageTemperature){
+    String payload = "{ \"data\": { \"temperature\" : " + String(current_averageTemperature) + "} }";
+    mqttClient.publish("wemos", payload.c_str(), true);
+}
+
 void loop() {
 
   blinkLed();
@@ -133,18 +143,12 @@ void loop() {
   rollingAverage.add(current_temperature);
   float current_averageTemperature = rollingAverage.getAverage();
   
-  Serial.println("counter: " + String(counter++));
-  Serial.println("cur temp: " + String(current_temperature));
-  Serial.println("rol avg: " + rollingAverage.getArrayString());
-  Serial.println("rol avg: " + String(current_averageTemperature));
-  Serial.println("mqtt state: " + String(mqttClient.state())); 
-  Serial.println("wifi state: " + getWifiStatus());
+  reportToSerial(current_temperature, current_averageTemperature);
 
   if (isValueChanged(current_averageTemperature, previous_averageTemperature)){
     Serial.println("Value changed more than toleralnce level");
     previous_averageTemperature = rollingAverage.getAverage();
-    String payload = "{ \"data\": { \"temperature\" : " + String(current_averageTemperature) + "} }";
-    mqttClient.publish("wemos", payload.c_str(), true);
+    reportToMqttClient(current_averageTemperature);
   }
   
   Serial.println("-----");
