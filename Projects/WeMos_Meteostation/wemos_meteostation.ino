@@ -123,13 +123,13 @@ void reportToWifiClient(float current_temperature, float current_averageTemperat
 //     String httpRequest = client.readStringUntil('\r');
 //     client.flush();
 
-    wifiClient.println("HTTP/1.1 200 OK");
-    wifiClient.println("Content-Type: text/html");
-    wifiClient.println(""); //  do not forget this one
-    wifiClient.println("<!DOCTYPE HTML>");
-    wifiClient.println("<html>");
+    wifiClient.print("HTTP/1.1 200 OK");
+    wifiClient.print("Content-Type: text/html");
+    wifiClient.print(""); //  do not forget this one
+    wifiClient.print("<!DOCTYPE HTML>");
+    wifiClient.print("<html>");
     
-    wifiClient.print("Counter: " + String(counter++) + "<br/>");
+    wifiClient.print("Counter: " + String(counter) + "<br/>");
     wifiClient.print("Current Temperature: " + String(current_temperature) + " C" + "<br/>");   
     wifiClient.print("Average Temperature: " + String(current_averageTemperature) + " C" + "<br/>");
     wifiClient.print("MQTT Client State: " + String(mqttClient.state()) + "<br/>"); 
@@ -140,7 +140,7 @@ void reportToWifiClient(float current_temperature, float current_averageTemperat
     rollingAverageString.replace(" ", "&emsp;");
     wifiClient.print("Rolling Average Array: " + rollingAverageString + "<br/>");
     
-    wifiClient.println("</html>");    
+    wifiClient.print("</html>");    
   }
 }
 
@@ -204,6 +204,8 @@ void loop() {
   delay(DELAY_TIME*1000);  
 
   reportToWifiClient(current_temperature, current_averageTemperature);
+
+  counter++;
 }
 
 //void callback(char* topic, byte* payload, unsigned int length) {
