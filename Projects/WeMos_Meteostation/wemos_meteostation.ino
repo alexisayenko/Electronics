@@ -63,15 +63,15 @@ class RollingAverage{
   }
 };
 
-WiFiClient espClient;
-PubSubClient mqttClient(espClient);
-RollingAverage rollingAverage;
-// ESP8266WebServer server(80);
 const float INITIAL_VOLTAGE = 5.0;
 const float CORRECTION_COEFFICIENT = 0;
 const float TOLERANCE = 0.3; // In Volts
 const int DELAY_TIME = 5; // Delay time in seconds for loop
 
+WiFiServer wifiServer(80);
+WiFiClient espClient;
+PubSubClient mqttClient(espClient);
+RollingAverage rollingAverage;
 int counter = 0;
 float previous_averageTemperature = -100;
 
@@ -90,31 +90,6 @@ String getWifiStatus(){
     case WL_CONNECTION_LOST: return "WL_CONNECTION_LOST";
     case WL_DISCONNECTED: return "WL_DISCONNECTED";
   }
-}
-
-WiFiServer wifiServer(80);
-
-void setup() {
-  Serial.begin(9600);     
-  pinMode(LED_BUILTIN, OUTPUT);     //Pin 2 for LED
-  
-  WiFi.begin(wifi_ssid, wifi_password);
-  delay(10);
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-
-  Serial.print("=> ESP8266 IP address: ");
-  Serial.print(WiFi.localIP());
-  
-  mqttClient.setServer(mqtt_server, 1883);    // Configure MQTT connexion
-  // mqttClient.setCallback(callback);           // callback function to execute when a MQTT message   
-
-  mqttClient.connect("ESP8266Client");
-  wifiServer.begin();
-
-//  server.on("/on", getInfo);
 }
 
 void reportToWifiClient(float current_temperature, float current_averageTemperature){
@@ -171,6 +146,29 @@ float getTemperature(float analog_pin_raw_value){
   float temperature = voltage / 0.01 - 273.14 + CORRECTION_COEFFICIENT;      
   
   return temperature;
+}
+
+void setup() {
+  Serial.begin(9600);     
+  pinMode(LED_BUILTIN, OUTPUT);     //Pin 2 for LED
+  
+  WiFi.begin(wifi_ssid, wifi_password);
+  delay(10);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  Serial.print("=> ESP8266 IP address: ");
+  Serial.print(WiFi.localIP());
+  
+  mqttClient.setServer(mqtt_server, 1883);    // Configure MQTT connexion
+  // mqttClient.setCallback(callback);           // callback function to execute when a MQTT message   
+
+  mqttClient.connect("ESP8266Client");
+  wifiServer.begin();
+
+//  server.on("/on", getInfo);
 }
 
 void loop() {
