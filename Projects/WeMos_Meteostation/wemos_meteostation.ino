@@ -44,24 +44,24 @@ void reportToWifiClient(float current_temperature, float current_average_tempera
 //     String httpRequest = client.readStringUntil('\r');
 //     client.flush();
 
-    wifiClient.print("HTTP/1.1 200 OK");
-    wifiClient.print("Content-Type: text/html");
-    wifiClient.print(""); //  do not forget this one
-    wifiClient.print("<!DOCTYPE HTML>");
-    wifiClient.print("<html>");
+    wifiClient.println("HTTP/1.1 200 OK");
+    wifiClient.println("Content-Type: text/html");
+    wifiClient.println(""); //  do not forget this one
+    wifiClient.println("<!DOCTYPE HTML>");
+    wifiClient.println("<html>");
     
-    wifiClient.print("Counter: " + String(counter) + "<br/>");
-    wifiClient.print("Current Temperature: " + String(current_temperature) + " C" + "<br/>");   
-    wifiClient.print("Average Temperature: " + String(current_average_temperature) + " C" + "<br/>");
-    wifiClient.print("MQTT Client State: " + String(mqttClient.state()) + "<br/>"); 
-    wifiClient.print("WiFi State: " + getWifiStatus() + "<br/>");
-    wifiClient.print("<br/><br/>");
+    wifiClient.println("Counter: " + String(counter) + "<br/>");
+    wifiClient.println("Current Temperature: " + String(current_temperature) + " C" + "<br/>");   
+    wifiClient.println("Average Temperature: " + String(current_average_temperature) + " C" + "<br/>");
+    wifiClient.println("MQTT Client State: " + String(mqttClient.state()) + "<br/>"); 
+    wifiClient.println("WiFi State: " + getWifiStatus() + "<br/>");
+    wifiClient.println("<br/><br/>");
 
     String rollingAverageString = rollingAverage.getArrayString();
     rollingAverageString.replace(" ", "&emsp;");
-    wifiClient.print("Rolling Average Array: " + rollingAverageString + "<br/>");
+    wifiClient.println("Rolling Average Array: " + rollingAverageString + "<br/>");
     
-    wifiClient.print("</html>");    
+    wifiClient.println("</html>");    
   }
 }
 
