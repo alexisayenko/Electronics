@@ -110,7 +110,12 @@ void reportToMqttClient(float current_average_temperature){
 
 void setup() {
   Serial.begin(9600);     
-  pinMode(LED_BUILTIN, OUTPUT);     //Pin 2 for LED
+  pinMode(LED_BUILTIN, OUTPUT);
+
+  IPAddress ip(192, 168, 0, 99);
+  IPAddress gateaway(192, 168, 0, 1);
+  IPAddress subnet_mask(255, 255, 255, 0);
+  WiFi.config(ip, gateaway, subnet_mask);
   
   WiFi.begin(wifi_ssid, wifi_password);
   delay(10);
@@ -120,7 +125,7 @@ void setup() {
   }
 
   Serial.print("=> ESP8266 IP address: ");
-  Serial.print(WiFi.localIP());
+  Serial.println(WiFi.localIP());
   
   mqttClient.setServer(mqtt_server, 1883);    // Configure MQTT connexion
   // mqttClient.setCallback(callback);           // callback function to execute when a MQTT message   
@@ -171,7 +176,7 @@ void loop() {
 // - display real time from: http://worldclockapi.com/ (JSON)
 // - display last time sent values to MQTT broker
 // - send to MQTT broker at least every hour
-// - start wifi server with specifi IP, so it will be possible to configure Port Forwarding
+// - start wifi server with specific IP, so it will be possible to configure Port Forwarding
 // - make loop delay less than 5 secs (so html page is more responsive), but read temperature values once every 5 or 10 secs.
 // - add light sensor
 // - user voltage regulator for accurate temperature measurements
