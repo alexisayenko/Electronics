@@ -11,7 +11,7 @@
 
 const float INITIAL_VOLTAGE = 5.0;
 const float CORRECTION_COEFFICIENT = 0;
-const float TOLERANCE = 0.3; // In Volts
+const float TOLERANCE = 0.3; // In Celsius Degrees
 const int DELAY_TIME = 5; // Delay time in seconds for loop
 
 WiFiServer wifiServer(80);
@@ -19,7 +19,7 @@ WiFiClient espClient;
 PubSubClient mqttClient(espClient);
 RollingAverage rollingAverage;
 int counter = 0;
-float previous_averageTemperature = -100;
+float previous_average_temperature = -100;
 
 bool isValueChanged(float value1, float value2){
   return abs(value1 - value2) > TOLERANCE;
@@ -38,7 +38,7 @@ String getWifiStatus(){
   }
 }
 
-void reportToWifiClient(float current_temperature, float current_averageTemperature){
+void reportToWifiClient(float current_temperature, float current_average_temperature){
  WiFiClient wifiClient = wifiServer.available();
   if (wifiClient.available()){
 //     String httpRequest = client.readStringUntil('\r');
@@ -52,7 +52,7 @@ void reportToWifiClient(float current_temperature, float current_averageTemperat
     
     wifiClient.print("Counter: " + String(counter) + "<br/>");
     wifiClient.print("Current Temperature: " + String(current_temperature) + " C" + "<br/>");   
-    wifiClient.print("Average Temperature: " + String(current_averageTemperature) + " C" + "<br/>");
+    wifiClient.print("Average Temperature: " + String(current_average_temperature) + " C" + "<br/>");
     wifiClient.print("MQTT Client State: " + String(mqttClient.state()) + "<br/>"); 
     wifiClient.print("WiFi State: " + getWifiStatus() + "<br/>");
     wifiClient.print("<br/><br/>");
@@ -94,13 +94,18 @@ float getTemperature(float analog_pin_raw_value){
   return temperature;
 }
 
-void reportToSerial(float current_temperature, float current_averageTemperature){
+void reportToSerial(float current_temperature, float current_average_temperature){
   Serial.println("Counter: " + String(counter++));
   Serial.println("Current Temperature: " + String(current_temperature));
-  Serial.println("Average Temperature: " + String(current_averageTemperature));
+  Serial.println("Average Temperature: " + String(current_average_temperature));
   Serial.println("MQTT State: " + String(mqttClient.state())); 
   Serial.println("WiFi Status: " + getWifiStatus());
   Serial.println("RollingAverage Array: " + rollingAverage.getArrayString());
+}
+
+void reportToMqttClient(float current_average_temperature){
+    String payload = "{ \"data\": { \"temperature\" : " + String(current_average_temperature) + "} }";
+    mqttClient.publish("wemos", payload.c_str(), true);
 }
 
 void setup() {
@@ -126,11 +131,6 @@ void setup() {
 //  server.on("/on", getInfo);
 }
 
-void reportToMqttClient(float current_averageTemperature){
-    String payload = "{ \"data\": { \"temperature\" : " + String(current_averageTemperature) + "} }";
-    mqttClient.publish("wemos", payload.c_str(), true);
-}
-
 void loop() {
 
   blinkLed();
@@ -139,22 +139,23 @@ void loop() {
   
   mqttClient.loop();
 
-  float current_temperature = getTemperature ((float) analogRead(A0));
+  float current_temperature = getTemperature((float) analogRead(A0));
   rollingAverage.add(current_temperature);
-  float current_averageTemperature = rollingAverage.getAverage();
+  float current_average_temperature = rollingAverage.getAverage();
   
-  reportToSerial(current_temperature, current_averageTemperature);
+  reportToSerial(current_temperature, current_average_temperature);
 
-  if (isValueChanged(current_averageTemperature, previous_averageTemperature)){
+  if (isValueChanged(current_average_temperature, previous_average_temperature)){
     Serial.println("Value changed more than toleralnce level");
-    previous_averageTemperature = rollingAverage.getAverage();
-    reportToMqttClient(current_averageTemperature);
+    previous_average_temperature = rollingAverage.getAverage();
+    reportToMqttClient(current_average_temperature);
   }
   
   Serial.println("-----");
-  delay(DELAY_TIME*1000);  
+  
+  delay(DELAY_TIME * 1000);  
 
-  reportToWifiClient(current_temperature, current_averageTemperature);
+  reportToWifiClient(current_temperature, current_average_temperature);
 
   counter++;
 }
