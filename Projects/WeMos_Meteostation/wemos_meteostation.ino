@@ -17,12 +17,20 @@ const float CORRECTION_COEFFICIENT = 0;
 const float TOLERANCE = 0.3; // In Celsius Degrees
 const int DELAY_TIME = 5; // Delay time in seconds for loop
 
+const int CYCLE_DELAY_MS = 500;
+const int MEASURE_TEMP_CYCLE_NUMBER = 10; // Measure temp every N cycles
+const int QUERY_TIME_SERVICE_CYCLE_NUMBER = 60; // Query service every N cycles.
+const int SEND_TO_MQTT_BROKER_EVERY_CYCLE_NUMBER = 3600; // At least every half an hour send to mqtt
+
 WiFiServer wifiServer(80);
 WiFiClient espClient;
 PubSubClient mqttClient(espClient);
 RollingAverage rollingAverage;
-int counter = 0;
+int cycle_counter = -1;
 float previous_average_temperature = -100;
+float current_average_temperature = -100;
+float current_temperature = -100;
+String current_time = "-none-";
 
 void setup() {
   Serial.begin(9600);     
@@ -55,34 +63,40 @@ void setup() {
 
 void loop() {
 
+  cycle_counter++;
   blinkLed();
-  
   checkConnectionAndReconnectIfNeeded();
-  
   mqttClient.loop();
 
-  float current_temperature = getTemperature((float) analogRead(A0));
-  rollingAverage.add(current_temperature);
-  float current_average_temperature = rollingAverage.getAverage();
-  
-  reportToSerial(current_temperature, current_average_temperature);
-
-  if (isValueChanged(current_average_temperature, previous_average_temperature)){
-    Serial.println("Value changed more than toleralnce level");
-    previous_average_temperature = rollingAverage.getAverage();
-    reportToMqttClient(current_average_temperature);
+  if (cycle_counter % MEASURE_TEMP_CYCLE_NUMBER == 0){
+    current_temperature = getTemperature((float) analogRead(A0));
+    rollingAverage.add(current_temperature);
+    current_average_temperature = rollingAverage.getAverage();
+    reportToSerial(current_temperature, current_average_temperature);
   }
 
-  queryWorldTime();  
+  bool isValueChanged = 
+    areNotEqual(current_average_temperature, previous_average_temperature);
+  bool isTimeToSend = 
+    cycle_counter % SEND_TO_MQTT_BROKER_EVERY_CYCLE_NUMBER == 0;
+
+  if (isValueChanged || isTimeToSend){
+    Serial.println("Sending to MQTT broker");    
+    reportToMqttClient(current_average_temperature);
+    previous_average_temperature = current_average_temperature; // remember state
+  }
+
+  if (cycle_counter % QUERY_TIME_SERVICE_CYCLE_NUMBER == 0){
+    queryWorldTime();  
+  }
+  
   reportToWifiClient(current_temperature, current_average_temperature);
 
-  counter++;
-
   Serial.println("-----");
-  delay(DELAY_TIME * 1000);  
+  delay(CYCLE_DELAY_MS);  
 }
 
-bool isValueChanged(float value1, float value2){
+bool areNotEqual(float value1, float value2){
   return abs(value1 - value2) > TOLERANCE;
 }
 
@@ -111,7 +125,8 @@ void reportToWifiClient(float current_temperature, float current_average_tempera
     wifiClient.println("<!DOCTYPE HTML>");
     wifiClient.println("<html>");
     
-    wifiClient.println("Counter: " + String(counter) + "<br/>");
+    wifiClient.println("Counter: " + String(cycle_counter) + "<br/>");
+    wifiClient.println("Current Time: " + current_time + "<br/>");
     wifiClient.println("Current Temperature: " + String(current_temperature) + " C" + "<br/>");   
     wifiClient.println("Average Temperature: " + String(current_average_temperature) + " C" + "<br/>");
     wifiClient.println("MQTT Client State: " + String(mqttClient.state()) + "<br/>"); 
@@ -156,7 +171,7 @@ float getTemperature(float analog_pin_raw_value){
 }
 
 void reportToSerial(float current_temperature, float current_average_temperature){
-  Serial.println("Counter: " + String(counter++));
+  Serial.println("Counter: " + String(cycle_counter));
   Serial.println("Current Temperature: " + String(current_temperature));
   Serial.println("Average Temperature: " + String(current_average_temperature));
   Serial.println("MQTT State: " + String(mqttClient.state())); 
@@ -197,26 +212,25 @@ String requestTimeFromHttp(){
   return payload;
 }
 
-void parseJsonTime(String jsonTime){
+String parseJsonTime(String jsonTime){
   // capacity calculated by https://arduinojson.org/v6/assistant/
   const int capacity = JSON_OBJECT_SIZE(9) + 173;
   DynamicJsonDocument doc(capacity);
-
+  
   DeserializationError err = deserializeJson(doc, jsonTime);
   if (err){
     Serial.print("Error during parsing JSON time: ");
     Serial.println(err.c_str());
+    
+    return "Error during parsing JSON time: " + String(err.c_str()); 
   }
   
-  const char* currentDateTime = doc["currentDateTime"];
-
-  Serial.println(currentDateTime);
+  return doc["currentDateTime"];
 }
 
 void queryWorldTime(){
-
   String jsonTime = requestTimeFromHttp();
-  parseJsonTime(jsonTime);
+  current_time = parseJsonTime(jsonTime);
 }
 
 //void callback(char* topic, byte* payload, unsigned int length) {
@@ -229,8 +243,9 @@ void queryWorldTime(){
 // + refactor - extract the rollingAverage into a class
 // + display real time from: http://worldclockapi.com/ (JSON)
 // - display last time sent values to MQTT broker
-// - send to MQTT broker at least every hour
+// + send to MQTT broker at least every hour
 // + start wifi server with specific IP, so it will be possible to configure Port Forwarding
-// - make loop delay less than 5 secs (so html page is more responsive), but read temperature values once every 5 or 10 secs.
+// + make loop delay less than 5 secs (so html page is more responsive), but read temperature values once every 5 or 10 secs.
 // - add light sensor
 // - user voltage regulator for accurate temperature measurements
+// - implement switching into deep sleep mode to save battery energy.
