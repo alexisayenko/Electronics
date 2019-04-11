@@ -24,6 +24,64 @@ RollingAverage rollingAverage;
 int counter = 0;
 float previous_average_temperature = -100;
 
+void setup() {
+  Serial.begin(9600);     
+  pinMode(LED_BUILTIN, OUTPUT);  // For blinking LED
+
+  IPAddress ip(192, 168, 0, 99);
+  IPAddress dns(8, 8, 8, 8);
+  IPAddress gateaway(192, 168, 0, 1);
+  IPAddress subnet_mask(255, 255, 255, 0);
+  WiFi.config(ip, dns, gateaway, subnet_mask);
+  
+  WiFi.begin(wifi_ssid, wifi_password);
+  delay(10);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  Serial.print("=> ESP8266 IP address: ");
+  Serial.println(WiFi.localIP());
+  
+  mqttClient.setServer(mqtt_server, 1883);    // Configure MQTT connexion
+  // mqttClient.setCallback(callback);           // callback function to execute when a MQTT message   
+
+  mqttClient.connect("ESP8266Client");
+  wifiServer.begin();
+
+//  server.on("/on", getInfo);
+}
+
+void loop() {
+
+  blinkLed();
+  
+  checkConnectionAndReconnectIfNeeded();
+  
+  mqttClient.loop();
+
+  float current_temperature = getTemperature((float) analogRead(A0));
+  rollingAverage.add(current_temperature);
+  float current_average_temperature = rollingAverage.getAverage();
+  
+  reportToSerial(current_temperature, current_average_temperature);
+
+  if (isValueChanged(current_average_temperature, previous_average_temperature)){
+    Serial.println("Value changed more than toleralnce level");
+    previous_average_temperature = rollingAverage.getAverage();
+    reportToMqttClient(current_average_temperature);
+  }
+
+  queryWorldTime();  
+  reportToWifiClient(current_temperature, current_average_temperature);
+
+  counter++;
+
+  Serial.println("-----");
+  delay(DELAY_TIME * 1000);  
+}
+
 bool isValueChanged(float value1, float value2){
   return abs(value1 - value2) > TOLERANCE;
 }
@@ -111,35 +169,6 @@ void reportToMqttClient(float current_average_temperature){
     mqttClient.publish("wemos", payload.c_str(), true);
 }
 
-void setup() {
-  Serial.begin(9600);     
-  pinMode(LED_BUILTIN, OUTPUT);  // For blinking LED
-
-  IPAddress ip(192, 168, 0, 99);
-  IPAddress dns(8, 8, 8, 8);
-  IPAddress gateaway(192, 168, 0, 1);
-  IPAddress subnet_mask(255, 255, 255, 0);
-  WiFi.config(ip, dns, gateaway, subnet_mask);
-  
-  WiFi.begin(wifi_ssid, wifi_password);
-  delay(10);
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-
-  Serial.print("=> ESP8266 IP address: ");
-  Serial.println(WiFi.localIP());
-  
-  mqttClient.setServer(mqtt_server, 1883);    // Configure MQTT connexion
-  // mqttClient.setCallback(callback);           // callback function to execute when a MQTT message   
-
-  mqttClient.connect("ESP8266Client");
-  wifiServer.begin();
-
-//  server.on("/on", getInfo);
-}
-
 String requestTimeFromHttp(){
 
     WiFiClient client;
@@ -190,35 +219,6 @@ void queryWorldTime(){
   parseJsonTime(jsonTime);
 }
 
-void loop() {
-
-  blinkLed();
-  
-  checkConnectionAndReconnectIfNeeded();
-  
-  mqttClient.loop();
-
-  float current_temperature = getTemperature((float) analogRead(A0));
-  rollingAverage.add(current_temperature);
-  float current_average_temperature = rollingAverage.getAverage();
-  
-  reportToSerial(current_temperature, current_average_temperature);
-
-  if (isValueChanged(current_average_temperature, previous_average_temperature)){
-    Serial.println("Value changed more than toleralnce level");
-    previous_average_temperature = rollingAverage.getAverage();
-    reportToMqttClient(current_average_temperature);
-  }
-
-  queryWorldTime();  
-  reportToWifiClient(current_temperature, current_average_temperature);
-
-  counter++;
-
-  Serial.println("-----");
-  delay(DELAY_TIME * 1000);  
-}
-
 //void callback(char* topic, byte* payload, unsigned int length) {
 //
 //  Serial.println(topic);
@@ -227,7 +227,7 @@ void loop() {
 
 // todo:
 // + refactor - extract the rollingAverage into a class
-// - display real time from: http://worldclockapi.com/ (JSON)
+// + display real time from: http://worldclockapi.com/ (JSON)
 // - display last time sent values to MQTT broker
 // - send to MQTT broker at least every hour
 // + start wifi server with specific IP, so it will be possible to configure Port Forwarding
