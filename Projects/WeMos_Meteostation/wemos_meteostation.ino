@@ -129,8 +129,8 @@ void reportToWifiClient(float current_temperature, float current_average_tempera
     
     wifiClient.println("Counter: " + String(cycle_counter) + "<br/>");
     wifiClient.println("Current Time: " + current_time + " (requested at cycle " + time_requested_at_cycle_number + ")<br/>");
-    wifiClient.println("Current Temperature: " + String(current_temperature) + " C" + "<br/>");   
-    wifiClient.println("Average Temperature: " + String(current_average_temperature) + " C" + "<br/>");
+    wifiClient.println("Current Temperature: " + String(current_temperature) + " °C" + "<br/>");   
+    wifiClient.println("Average Temperature: " + String(current_average_temperature) + " °C" + "<br/>");
     wifiClient.println("MQTT Client State: " + String(mqttClient.state()) + "<br/>"); 
     wifiClient.println("WiFi State: " + getWifiStatus() + "<br/>");
     wifiClient.println("<br/><br/>");
@@ -254,4 +254,5 @@ void queryWorldTime(){
 // - add light sensor
 // - user voltage regulator for accurate temperature measurements
 // - implement switching into deep sleep mode to save battery energy.
-// - remove 2 seconds delay in blinkLed() function
+// + remove 2 seconds delay in blinkLed() function
+// - set a range of values eligible to be send to mqtt. so no values lik -273 are stored in the db.
