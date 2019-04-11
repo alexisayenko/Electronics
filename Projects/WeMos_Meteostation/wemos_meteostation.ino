@@ -252,7 +252,7 @@ void queryWorldTime(){
 // todo:
 // + refactor - extract the rollingAverage into a class
 // + display real time from: http://worldclockapi.com/ (JSON)
-// - display last time sent values to MQTT broker
+// + display last time sent values to MQTT broker
 // + send to MQTT broker at least every hour
 // + start wifi server with specific IP, so it will be possible to configure Port Forwarding
 // + make loop delay less than 5 secs (so html page is more responsive), but read temperature values once every 5 or 10 secs.
