@@ -21,6 +21,7 @@ const int CYCLE_DELAY_MS = 500;
 const int MEASURE_TEMP_CYCLE_NUMBER = 10; // Measure temp every N cycles
 const int QUERY_TIME_SERVICE_CYCLE_NUMBER = 60; // Query service every N cycles.
 const int SEND_TO_MQTT_BROKER_EVERY_CYCLE_NUMBER = 3600; // At least every half an hour send to mqtt
+const float MIN_TEMP_TO_REPORT = 5;
 
 WiFiServer wifiServer(80);
 WiFiClient espClient;
@@ -33,6 +34,7 @@ float current_temperature = -100;
 String current_time = "-none-";
 int time_requested_at_cycle_number = -1;
 int blinkState = LOW;
+int cycle_number_last_report_occured_on = -1;
 
 void setup() {
   Serial.begin(9600);     
@@ -81,18 +83,21 @@ void loop() {
     areNotEqual(current_average_temperature, previous_average_temperature);
   bool isTimeToSend = 
     cycle_counter % SEND_TO_MQTT_BROKER_EVERY_CYCLE_NUMBER == 0;
+  bool isTempValid = current_average_temperature > MIN_TEMP_TO_REPORT;
+  
 
-  if (isValueChanged || isTimeToSend){
+  if ((isValueChanged || isTimeToSend) && isTempValid){
     Serial.println("Sending to MQTT broker");    
     reportToMqttClient(current_average_temperature);
     previous_average_temperature = current_average_temperature; // remember state
+    cycle_number_last_report_occured_on = cycle_counter;
   }
 
   if (cycle_counter % QUERY_TIME_SERVICE_CYCLE_NUMBER == 0){
     queryWorldTime();  
   }
   
-  reportToWifiClient(current_temperature, current_average_temperature);
+  reportToWifiClient();
 
   Serial.println("-----");
   delay(CYCLE_DELAY_MS);  
@@ -115,7 +120,7 @@ String getWifiStatus(){
   }
 }
 
-void reportToWifiClient(float current_temperature, float current_average_temperature){
+void reportToWifiClient(){
  WiFiClient wifiClient = wifiServer.available();
   if (wifiClient.available()){
 //     String httpRequest = client.readStringUntil('\r');
@@ -129,8 +134,8 @@ void reportToWifiClient(float current_temperature, float current_average_tempera
     
     wifiClient.println("Counter: " + String(cycle_counter) + "<br/>");
     wifiClient.println("Current Time: " + current_time + " (requested at cycle " + time_requested_at_cycle_number + ")<br/>");
-    wifiClient.println("Current Temperature: " + String(current_temperature) + " °C" + "<br/>");   
-    wifiClient.println("Average Temperature: " + String(current_average_temperature) + " °C" + "<br/>");
+    wifiClient.println("Current Temperature: " + String(current_temperature) + " C" + "<br/>");   
+    wifiClient.println("Average Temperature: " + String(current_average_temperature) + " C (sent on counter " + cycle_number_last_report_occured_on +")" + "<br/>");
     wifiClient.println("MQTT Client State: " + String(mqttClient.state()) + "<br/>"); 
     wifiClient.println("WiFi State: " + getWifiStatus() + "<br/>");
     wifiClient.println("<br/><br/>");
@@ -255,4 +260,4 @@ void queryWorldTime(){
 // - user voltage regulator for accurate temperature measurements
 // - implement switching into deep sleep mode to save battery energy.
 // + remove 2 seconds delay in blinkLed() function
-// - set a range of values eligible to be send to mqtt. so no values lik -273 are stored in the db.
+// + set a range of values eligible to be send to mqtt. so no values lik -273 are stored in the db.
