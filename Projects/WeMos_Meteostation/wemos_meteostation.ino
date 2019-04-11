@@ -1,6 +1,9 @@
-#include <ESP8266WiFi.h>
-#include <PubSubClient.h>
-#include "RollingAverage.h"
+
+#include <ESP8266WiFi.h>  // send over wifi data
+#include <ESP8266HTTPClient.h>
+#include <PubSubClient.h>  // mqtt
+#include "RollingAverage.h"  // average value over the last 50
+#include <ArduinoJson.h>  // (https://arduinojson.org/) to parse response from world time service
 
 #define wifi_ssid "Alex"
 #define wifi_password "12345678"
@@ -100,7 +103,7 @@ void reportToSerial(float current_temperature, float current_average_temperature
   Serial.println("Average Temperature: " + String(current_average_temperature));
   Serial.println("MQTT State: " + String(mqttClient.state())); 
   Serial.println("WiFi Status: " + getWifiStatus());
-  Serial.println("RollingAverage Array: " + rollingAverage.getArrayString());
+  // Serial.println("RollingAverage Array: " + rollingAverage.getArrayString());
 }
 
 void reportToMqttClient(float current_average_temperature){
@@ -110,12 +113,13 @@ void reportToMqttClient(float current_average_temperature){
 
 void setup() {
   Serial.begin(9600);     
-  pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(LED_BUILTIN, OUTPUT);  // For blinking LED
 
   IPAddress ip(192, 168, 0, 99);
+  IPAddress dns(8, 8, 8, 8);
   IPAddress gateaway(192, 168, 0, 1);
   IPAddress subnet_mask(255, 255, 255, 0);
-  WiFi.config(ip, gateaway, subnet_mask);
+  WiFi.config(ip, dns, gateaway, subnet_mask);
   
   WiFi.begin(wifi_ssid, wifi_password);
   delay(10);
@@ -134,6 +138,56 @@ void setup() {
   wifiServer.begin();
 
 //  server.on("/on", getInfo);
+}
+
+String requestTimeFromHttp(){
+
+    WiFiClient client;
+    HTTPClient http;
+    String payload = "";
+    
+    if (http.begin(client, "http://worldclockapi.com/api/json/utc/now")) {
+
+      int httpCode = http.GET();
+
+      // httpCode will be negative on error
+      if (httpCode > 0) {
+        // file found at server
+        if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_MOVED_PERMANENTLY) {
+          payload = http.getString();
+        }
+      } else {
+        Serial.printf("[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
+      }
+
+      http.end();
+    } else {
+      Serial.printf("[HTTP} Unable to connect\n");
+    }
+
+  return payload;
+}
+
+void parseJsonTime(String jsonTime){
+  // capacity calculated by https://arduinojson.org/v6/assistant/
+  const int capacity = JSON_OBJECT_SIZE(9) + 173;
+  DynamicJsonDocument doc(capacity);
+
+  DeserializationError err = deserializeJson(doc, jsonTime);
+  if (err){
+    Serial.print("Error during parsing JSON time: ");
+    Serial.println(err.c_str());
+  }
+  
+  const char* currentDateTime = doc["currentDateTime"];
+
+  Serial.println(currentDateTime);
+}
+
+void queryWorldTime(){
+
+  String jsonTime = requestTimeFromHttp();
+  parseJsonTime(jsonTime);
 }
 
 void loop() {
@@ -155,14 +209,14 @@ void loop() {
     previous_average_temperature = rollingAverage.getAverage();
     reportToMqttClient(current_average_temperature);
   }
-  
-  Serial.println("-----");
-  
-  delay(DELAY_TIME * 1000);  
 
+  queryWorldTime();  
   reportToWifiClient(current_temperature, current_average_temperature);
 
   counter++;
+
+  Serial.println("-----");
+  delay(DELAY_TIME * 1000);  
 }
 
 //void callback(char* topic, byte* payload, unsigned int length) {
@@ -176,7 +230,7 @@ void loop() {
 // - display real time from: http://worldclockapi.com/ (JSON)
 // - display last time sent values to MQTT broker
 // - send to MQTT broker at least every hour
-// - start wifi server with specific IP, so it will be possible to configure Port Forwarding
+// + start wifi server with specific IP, so it will be possible to configure Port Forwarding
 // - make loop delay less than 5 secs (so html page is more responsive), but read temperature values once every 5 or 10 secs.
 // - add light sensor
 // - user voltage regulator for accurate temperature measurements
