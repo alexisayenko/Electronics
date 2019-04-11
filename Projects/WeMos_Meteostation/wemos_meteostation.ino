@@ -31,6 +31,8 @@ float previous_average_temperature = -100;
 float current_average_temperature = -100;
 float current_temperature = -100;
 String current_time = "-none-";
+int time_requested_at_cycle_number = -1;
+int blinkState = LOW;
 
 void setup() {
   Serial.begin(9600);     
@@ -126,7 +128,7 @@ void reportToWifiClient(float current_temperature, float current_average_tempera
     wifiClient.println("<html>");
     
     wifiClient.println("Counter: " + String(cycle_counter) + "<br/>");
-    wifiClient.println("Current Time: " + current_time + "<br/>");
+    wifiClient.println("Current Time: " + current_time + " (requested at cycle " + time_requested_at_cycle_number + ")<br/>");
     wifiClient.println("Current Temperature: " + String(current_temperature) + " C" + "<br/>");   
     wifiClient.println("Average Temperature: " + String(current_average_temperature) + " C" + "<br/>");
     wifiClient.println("MQTT Client State: " + String(mqttClient.state()) + "<br/>"); 
@@ -142,10 +144,15 @@ void reportToWifiClient(float current_temperature, float current_average_tempera
 }
 
 void blinkLed(){
-  digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
-  delay(1000);                       // wait for a second
-  digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
-  delay(1000);      
+  if (cycle_counter % 2 != 0){ // Do every second
+    return;
+  }
+
+  if (blinkState == LOW)
+    blinkState = HIGH;
+  else blinkState = LOW;
+  
+  digitalWrite(LED_BUILTIN, blinkState);
 }
 
 void checkConnectionAndReconnectIfNeeded(){
@@ -193,10 +200,7 @@ String requestTimeFromHttp(){
     if (http.begin(client, "http://worldclockapi.com/api/json/utc/now")) {
 
       int httpCode = http.GET();
-
-      // httpCode will be negative on error
-      if (httpCode > 0) {
-        // file found at server
+      if (httpCode > 0) {     
         if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_MOVED_PERMANENTLY) {
           payload = http.getString();
         }
@@ -231,6 +235,7 @@ String parseJsonTime(String jsonTime){
 void queryWorldTime(){
   String jsonTime = requestTimeFromHttp();
   current_time = parseJsonTime(jsonTime);
+  time_requested_at_cycle_number = cycle_counter;
 }
 
 //void callback(char* topic, byte* payload, unsigned int length) {
@@ -249,3 +254,4 @@ void queryWorldTime(){
 // - add light sensor
 // - user voltage regulator for accurate temperature measurements
 // - implement switching into deep sleep mode to save battery energy.
+// - remove 2 seconds delay in blinkLed() function
