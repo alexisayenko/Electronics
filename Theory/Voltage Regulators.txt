@@ -1,0 +1,21 @@
+A voltage regulator is an integrated circuit (IC) that provides a constant fixed output voltage regardless of a change in the load or input voltage.
+
+Common packages are TO-220, SOT23-5
+
+Popular is family of LM78xx series where xx takes a range from 05 to 24 (LM7806, LM7812, LM7824 etc) and indicates the output voltage. Input voltage should be 2.5-40 volts over the intended output.
+Less common are low power versions LM78Mxx (500 mA) and LM78Lxx (100 mA) from Natioanl Semiconductor.
+
+LM7805 - output: 5 volts. 
+	 input: 7.5 volts and more.
+	
+
+LM1117 - linear voltage reugulator. Comes in fixed output voltages: 1.8, 2.5, 3.3, 5 volts and adjustable unit: 1.25 - 13.8 volts.
+	 input: <20V, <800mA
+	 drop out voltage: 1.2 V at 800 mA, which means you must provide 1.2 more volts than you are outputting.
+
+LM3904 - 1-A low-dropout regulator for 5-v to 3.3-v conversion
+	 input: 4.5-5.5 V
+	 output: 3.3 V
+
+Never tried, but read about:
+L78L33ACZ - 3.3 volts
