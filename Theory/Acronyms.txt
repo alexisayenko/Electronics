@@ -1,0 +1,2 @@
+Vcc---Vdd |Positive supply voltage|Voltage Drain Drain
+Vee---Vss |Negative supply, ground|Voltage Source Source|0|GND
