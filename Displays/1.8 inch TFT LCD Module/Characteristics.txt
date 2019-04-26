@@ -1,0 +1,16 @@
+1.8 inch TFT LCD Module
+
+Operating voltage: 5 V
+Screen size: 160x128
+
+Connection to Arduino UNO
+VCC	+5V
+BKL	GND
+RESET	PIN 8 
+RS	PIN 9
+MISO	NOT NEEDED
+MOSI	PIN 11
+SCLK	PIN 13
+LCD_CS	PIN 10
+SD_CS	NOT NEEDED
+GND	GND
