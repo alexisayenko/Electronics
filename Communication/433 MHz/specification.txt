@@ -1,0 +1,6 @@
+Transmitting range: 20~100 meters (given perfect conditions in open air)
+Transmitting speed: 4KB/s'
+Transmitting power: 10mW
+Transmitting frequency: 433MHz
+Pin (from left to right): Data, VCC, GND
+Supply voltage: 5V 
