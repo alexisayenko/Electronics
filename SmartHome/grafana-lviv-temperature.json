@@ -120,7 +120,7 @@
       "thresholds": "",
       "timeFrom": null,
       "timeShift": null,
-      "title": "Temperature d65e",
+      "title": "Кухня d65e",
       "type": "singlestat",
       "valueFontSize": "150%",
       "valueMaps": [
@@ -235,7 +235,7 @@
       "thresholds": "",
       "timeFrom": null,
       "timeShift": null,
-      "title": "Temp b5b2",
+      "title": "Столовая b5b2",
       "type": "singlestat",
       "valueFontSize": "150%",
       "valueMaps": [
@@ -350,7 +350,7 @@
       "thresholds": "",
       "timeFrom": null,
       "timeShift": null,
-      "title": "Temp b5da",
+      "title": "Маленькая b5da",
       "type": "singlestat",
       "valueFontSize": "150%",
       "valueMaps": [
@@ -465,121 +465,9 @@
       "thresholds": "",
       "timeFrom": null,
       "timeShift": null,
-      "title": "Temp d5b8",
+      "title": "Рояль d5b8",
       "type": "singlestat",
       "valueFontSize": "150%",
-      "valueMaps": [
-        {
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }
-      ],
-      "valueName": "current"
-    },
-    {
-      "cacheTimeout": null,
-      "colorBackground": false,
-      "colorValue": false,
-      "colors": [
-        "#299c46",
-        "rgba(237, 129, 40, 0.89)",
-        "#d44a3a"
-      ],
-      "datasource": "alex-ocean",
-      "format": "none",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": false,
-        "thresholdLabels": false,
-        "thresholdMarkers": true
-      },
-      "gridPos": {
-        "h": 2,
-        "w": 2,
-        "x": 19,
-        "y": 0
-      },
-      "id": 13,
-      "interval": null,
-      "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "name": "value to text",
-          "value": 1
-        },
-        {
-          "name": "range to text",
-          "value": 2
-        }
-      ],
-      "maxDataPoints": 100,
-      "nullPointMode": "connected",
-      "nullText": null,
-      "options": {},
-      "postfix": "",
-      "postfixFontSize": "50%",
-      "prefix": "",
-      "prefixFontSize": "50%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "sparkline": {
-        "fillColor": "rgba(31, 118, 189, 0.18)",
-        "full": false,
-        "lineColor": "rgb(31, 120, 193)",
-        "show": false,
-        "ymax": null,
-        "ymin": null
-      },
-      "tableColumn": "",
-      "targets": [
-        {
-          "format": "time_series",
-          "group": [],
-          "metricColumn": "Device",
-          "rawQuery": false,
-          "rawSql": "SELECT\n  TS AS \"time\",\n  Device AS metric,\n  Pressure\nFROM Xiaomi_Temperature_Sensors_Lviv\nWHERE\n  Device = 'zigbee2mqtt/0x00158d0003f0d65e'\nORDER BY TS",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "Pressure"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "Xiaomi_Temperature_Sensors_Lviv",
-          "timeColumn": "TS",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "datatype": "varchar",
-              "name": "",
-              "params": [
-                "Device",
-                "=",
-                "'zigbee2mqtt/0x00158d0003f0d65e'"
-              ],
-              "type": "expression"
-            }
-          ]
-        }
-      ],
-      "thresholds": "",
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Pressure d65e",
-      "type": "singlestat",
-      "valueFontSize": "80%",
       "valueMaps": [
         {
           "op": "=",
@@ -691,7 +579,7 @@
       "thresholds": "45,55",
       "timeFrom": null,
       "timeShift": null,
-      "title": "Humidity d65e",
+      "title": "Кухня d65e",
       "type": "singlestat",
       "valueFontSize": "150%",
       "valueMaps": [
@@ -805,7 +693,7 @@
       "thresholds": "45,55",
       "timeFrom": null,
       "timeShift": null,
-      "title": "Humidity b5b2",
+      "title": "Столовая b5b2",
       "type": "singlestat",
       "valueFontSize": "150%",
       "valueMaps": [
@@ -919,7 +807,7 @@
       "thresholds": "45,55",
       "timeFrom": null,
       "timeShift": null,
-      "title": "Humidity b5da",
+      "title": "Маленькая b5da",
       "type": "singlestat",
       "valueFontSize": "150%",
       "valueMaps": [
@@ -1033,7 +921,7 @@
       "thresholds": "45,55",
       "timeFrom": null,
       "timeShift": null,
-      "title": "Humidity d5b8",
+      "title": "Рояль d5b8",
       "type": "singlestat",
       "valueFontSize": "150%",
       "valueMaps": [
@@ -1370,6 +1258,118 @@
       "timeFrom": null,
       "timeShift": null,
       "title": "ef30 Voltage",
+      "type": "singlestat",
+      "valueFontSize": "80%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "current"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "datasource": "alex-ocean",
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 2,
+        "x": 9,
+        "y": 8
+      },
+      "id": 13,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "options": {},
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false,
+        "ymax": null,
+        "ymin": null
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "Device",
+          "rawQuery": false,
+          "rawSql": "SELECT\n  TS AS \"time\",\n  Device AS metric,\n  Pressure\nFROM Xiaomi_Temperature_Sensors_Lviv\nWHERE\n  Device = 'zigbee2mqtt/0x00158d0003f0d65e'\nORDER BY TS",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "Pressure"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "Xiaomi_Temperature_Sensors_Lviv",
+          "timeColumn": "TS",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "datatype": "varchar",
+              "name": "",
+              "params": [
+                "Device",
+                "=",
+                "'zigbee2mqtt/0x00158d0003f0d65e'"
+              ],
+              "type": "expression"
+            }
+          ]
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Давление d65e",
       "type": "singlestat",
       "valueFontSize": "80%",
       "valueMaps": [
@@ -1764,8 +1764,42 @@
           "hide": false,
           "metricColumn": "Device",
           "rawQuery": false,
-          "rawSql": "SELECT\n  TS AS \"time\",\n  Device AS metric,\n  Battery\nFROM Xiaomi_Temperature_Sensors_Lviv\nWHERE\n  Device = 'zigbee2mqtt/0x00158d0003f0d5b8'\nORDER BY TS",
+          "rawSql": "SELECT\n  TS AS \"time\",\n  Device AS metric,\n  Battery\nFROM Xiaomi_Temperature_Sensors_Lviv\nWHERE\n  Device = 'zigbee2mqtt/0x00158d000411b5b2'\nORDER BY TS",
           "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "Battery"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "Xiaomi_Temperature_Sensors_Lviv",
+          "timeColumn": "TS",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "datatype": "varchar",
+              "name": "",
+              "params": [
+                "Device",
+                "=",
+                "'zigbee2mqtt/0x00158d000411b5b2'"
+              ],
+              "type": "expression"
+            }
+          ]
+        },
+        {
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "Device",
+          "rawQuery": false,
+          "rawSql": "SELECT\n  TS AS \"time\",\n  Device AS metric,\n  Battery\nFROM Xiaomi_Temperature_Sensors_Lviv\nWHERE\n  Device = 'zigbee2mqtt/0x00158d0003f0d5b8'\nORDER BY TS",
+          "refId": "B",
           "select": [
             [
               {
@@ -1795,10 +1829,11 @@
         {
           "format": "table",
           "group": [],
+          "hide": false,
           "metricColumn": "Device",
           "rawQuery": false,
           "rawSql": "SELECT\n  TS AS \"time\",\n  Device AS metric,\n  Battery\nFROM Xiaomi_Temperature_Sensors_Lviv\nWHERE\n  Device = 'zigbee2mqtt/0x00158d0003f0d65e'\nORDER BY TS",
-          "refId": "B",
+          "refId": "C",
           "select": [
             [
               {
@@ -1820,6 +1855,40 @@
                 "Device",
                 "=",
                 "'zigbee2mqtt/0x00158d0003f0d65e'"
+              ],
+              "type": "expression"
+            }
+          ]
+        },
+        {
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "Device",
+          "rawQuery": false,
+          "rawSql": "SELECT\n  TS AS \"time\",\n  Device AS metric,\n  Battery\nFROM Xiaomi_Temperature_Sensors_Lviv\nWHERE\n  Device = 'zigbee2mqtt/0x00158d000411b5da'\nORDER BY TS",
+          "refId": "D",
+          "select": [
+            [
+              {
+                "params": [
+                  "Battery"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "Xiaomi_Temperature_Sensors_Lviv",
+          "timeColumn": "TS",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "datatype": "varchar",
+              "name": "",
+              "params": [
+                "Device",
+                "=",
+                "'zigbee2mqtt/0x00158d000411b5da'"
               ],
               "type": "expression"
             }
@@ -2020,12 +2089,12 @@
     "list": []
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-6h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Lviv Temperature",
   "uid": "lviv-temperature",
-  "version": 35
+  "version": 51
 }
