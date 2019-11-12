@@ -1489,6 +1489,7 @@
     },
     {
       "aliasColors": {
+        "zigbee2mqtt/0x00158d0003f0d5b8": "green",
         "zigbee2mqtt/0x00158d0003f0d65e": "blue",
         "zigbee2mqtt/0x00158d000411b5b2": "yellow",
         "zigbee2mqtt/0x00158d000411b5da": "red"
@@ -1653,8 +1654,8 @@
           "group": [],
           "hide": false,
           "metricColumn": "Device",
-          "rawQuery": false,
-          "rawSql": "SELECT\n  TS AS \"time\",\n  Device AS metric,\n  Battery\nFROM Xiaomi_Temperature_Sensors_Lviv\nWHERE\n  Device = 'zigbee2mqtt/0x00158d000411b5b2'\nORDER BY TS",
+          "rawQuery": true,
+          "rawSql": "SELECT Battery from zigbee2mqtt.Xiaomi_Temperature_Sensors_Lviv\nwhere Battery is not null and \nDevice like '%b5b2'\norder by id DESC limit 1",
           "refId": "A",
           "select": [
             [
@@ -1687,8 +1688,8 @@
           "group": [],
           "hide": false,
           "metricColumn": "Device",
-          "rawQuery": false,
-          "rawSql": "SELECT\n  TS AS \"time\",\n  Device AS metric,\n  Battery\nFROM Xiaomi_Temperature_Sensors_Lviv\nWHERE\n  Device = 'zigbee2mqtt/0x00158d0003f0d5b8'\nORDER BY TS",
+          "rawQuery": true,
+          "rawSql": "SELECT Battery from zigbee2mqtt.Xiaomi_Temperature_Sensors_Lviv\nwhere Battery is not null and \nDevice like '%d5b8'\norder by id DESC limit 1",
           "refId": "B",
           "select": [
             [
@@ -1721,8 +1722,8 @@
           "group": [],
           "hide": false,
           "metricColumn": "Device",
-          "rawQuery": false,
-          "rawSql": "SELECT\n  TS AS \"time\",\n  Device AS metric,\n  Battery\nFROM Xiaomi_Temperature_Sensors_Lviv\nWHERE\n  Device = 'zigbee2mqtt/0x00158d0003f0d65e'\nORDER BY TS",
+          "rawQuery": true,
+          "rawSql": "SELECT Battery from zigbee2mqtt.Xiaomi_Temperature_Sensors_Lviv\nwhere Battery is not null and \nDevice like '%d65e'\norder by id DESC limit 1\n",
           "refId": "C",
           "select": [
             [
@@ -1755,8 +1756,8 @@
           "group": [],
           "hide": false,
           "metricColumn": "Device",
-          "rawQuery": false,
-          "rawSql": "SELECT\n  TS AS \"time\",\n  Device AS metric,\n  Battery\nFROM Xiaomi_Temperature_Sensors_Lviv\nWHERE\n  Device = 'zigbee2mqtt/0x00158d000411b5da'\nORDER BY TS",
+          "rawQuery": true,
+          "rawSql": "SELECT Battery from zigbee2mqtt.Xiaomi_Temperature_Sensors_Lviv\nwhere Battery is not null and \nDevice like '%b5da'\norder by id DESC limit 1",
           "refId": "D",
           "select": [
             [
@@ -1836,8 +1837,8 @@
           "format": "table",
           "group": [],
           "metricColumn": "Device",
-          "rawQuery": false,
-          "rawSql": "SELECT\n  TS AS \"time\",\n  Device AS metric,\n  LinkQuality\nFROM Xiaomi_Temperature_Sensors_Lviv\nWHERE\n  Device = 'zigbee2mqtt/0x00158d0003f0d65e'\nORDER BY TS",
+          "rawQuery": true,
+          "rawSql": "SELECT LinkQuality from zigbee2mqtt.Xiaomi_Temperature_Sensors_Lviv\nwhere LinkQuality is not null and \nDevice like '%d65e'\norder by id DESC limit 1\n",
           "refId": "A",
           "select": [
             [
@@ -1869,8 +1870,8 @@
           "format": "table",
           "group": [],
           "metricColumn": "Device",
-          "rawQuery": false,
-          "rawSql": "SELECT\n  TS AS \"time\",\n  Device AS metric,\n  LinkQuality\nFROM Xiaomi_Temperature_Sensors_Lviv\nWHERE\n  Device = 'zigbee2mqtt/0x00158d000411b5b2'\nORDER BY TS",
+          "rawQuery": true,
+          "rawSql": "SELECT LinkQuality from zigbee2mqtt.Xiaomi_Temperature_Sensors_Lviv\nwhere LinkQuality is not null and \nDevice like '%b5b2'\norder by id DESC limit 1",
           "refId": "B",
           "select": [
             [
@@ -1902,8 +1903,8 @@
           "format": "table",
           "group": [],
           "metricColumn": "Device",
-          "rawQuery": false,
-          "rawSql": "SELECT\n  TS AS \"time\",\n  Device AS metric,\n  LinkQuality\nFROM Xiaomi_Temperature_Sensors_Lviv\nWHERE\n  Device = 'zigbee2mqtt/0x00158d0003f0d5b8'\nORDER BY TS",
+          "rawQuery": true,
+          "rawSql": "SELECT LinkQuality from zigbee2mqtt.Xiaomi_Temperature_Sensors_Lviv\nwhere LinkQuality is not null and \nDevice like '%d5b8'\norder by id DESC limit 1\n",
           "refId": "C",
           "select": [
             [
@@ -1935,8 +1936,8 @@
           "format": "table",
           "group": [],
           "metricColumn": "Device",
-          "rawQuery": false,
-          "rawSql": "SELECT\n  TS AS \"time\",\n  Device AS metric,\n  LinkQuality\nFROM Xiaomi_Temperature_Sensors_Lviv\nWHERE\n  Device = 'zigbee2mqtt/0x00158d000411b5da'\nORDER BY TS",
+          "rawQuery": true,
+          "rawSql": "SELECT LinkQuality from zigbee2mqtt.Xiaomi_Temperature_Sensors_Lviv\nwhere LinkQuality is not null and \nDevice like '%b5da'\norder by id DESC limit 1",
           "refId": "D",
           "select": [
             [
@@ -1969,9 +1970,210 @@
       "timeShift": null,
       "title": "Link Quality",
       "type": "bargauge"
+    },
+    {
+      "columns": [],
+      "datasource": "alex-ocean",
+      "fontSize": "100%",
+      "gridPos": {
+        "h": 7,
+        "w": 22,
+        "x": 1,
+        "y": 40
+      },
+      "id": 27,
+      "options": {},
+      "pageSize": null,
+      "showHeader": true,
+      "sort": {
+        "col": null,
+        "desc": false
+      },
+      "styles": [
+        {
+          "alias": "Time",
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "pattern": "Time",
+          "type": "date"
+        },
+        {
+          "alias": "",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "decimals": 2,
+          "link": false,
+          "pattern": "/.*/",
+          "thresholds": [],
+          "type": "string",
+          "unit": "short"
+        }
+      ],
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT * from zigbee2mqtt.Xiaomi_Temperature_Sensors_Lviv\nwhere Device like '%d65e'\norder by id DESC limit 1",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "Id"
+                ],
+                "type": "column"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "Battery"
+                ],
+                "type": "column"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "Id"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "Xiaomi_Temperature_Sensors",
+          "timeColumn": "TS",
+          "timeColumnType": "timestamp",
+          "where": []
+        },
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT * from zigbee2mqtt.Xiaomi_Temperature_Sensors_Lviv\nwhere Device like '%b5b2'\norder by id DESC limit 1",
+          "refId": "B",
+          "select": [
+            [
+              {
+                "params": [
+                  "Id"
+                ],
+                "type": "column"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "Battery"
+                ],
+                "type": "column"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "Id"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "Xiaomi_Temperature_Sensors",
+          "timeColumn": "TS",
+          "timeColumnType": "timestamp",
+          "where": []
+        },
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT * from zigbee2mqtt.Xiaomi_Temperature_Sensors_Lviv\nwhere Device like '%b5da'\norder by id DESC limit 1",
+          "refId": "C",
+          "select": [
+            [
+              {
+                "params": [
+                  "Id"
+                ],
+                "type": "column"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "Battery"
+                ],
+                "type": "column"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "Id"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "Xiaomi_Temperature_Sensors",
+          "timeColumn": "TS",
+          "timeColumnType": "timestamp",
+          "where": []
+        },
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT * from zigbee2mqtt.Xiaomi_Temperature_Sensors_Lviv\nwhere Device like '%d5b8'\norder by id DESC limit 1",
+          "refId": "D",
+          "select": [
+            [
+              {
+                "params": [
+                  "Id"
+                ],
+                "type": "column"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "Battery"
+                ],
+                "type": "column"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "Id"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "Xiaomi_Temperature_Sensors",
+          "timeColumn": "TS",
+          "timeColumnType": "timestamp",
+          "where": []
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Последние значения",
+      "transform": "table",
+      "type": "table"
     }
   ],
-  "refresh": false,
+  "refresh": "10s",
   "schemaVersion": 20,
   "style": "dark",
   "tags": [],
@@ -1979,7 +2181,7 @@
     "list": []
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-3h",
     "to": "now"
   },
   "timepicker": {
@@ -1999,5 +2201,5 @@
   "timezone": "",
   "title": "Lviv Temperature",
   "uid": "lviv-temperature",
-  "version": 72
+  "version": 79
 }
