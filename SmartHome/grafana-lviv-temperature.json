@@ -1047,117 +1047,6 @@
       "valueName": "current"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "alex-ocean",
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 1,
-        "w": 1,
-        "x": 4,
-        "y": 8
-      },
-      "id": 2,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "dataLinks": []
-      },
-      "percentage": false,
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "datasource": "alex-ocean",
-          "format": "time_series",
-          "group": [],
-          "metricColumn": "Device",
-          "rawQuery": false,
-          "rawSql": "SELECT\n  TS AS \"time\",\n  Device AS metric,\n  Temperature\nFROM Xiaomi_Temperature_Sensors_Lviv\nWHERE\n  $__timeFilter(TS)\nORDER BY TS",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "Temperature"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "Xiaomi_Temperature_Sensors_Lviv",
-          "timeColumn": "TS",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Температура",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "decimals": 0,
-          "format": "celsius",
-          "label": "",
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
       "aliasColors": {
         "Кухня d65e": "blue",
         "Маленькая b5da": "red",
@@ -1194,7 +1083,7 @@
       },
       "percentage": false,
       "pointradius": 2,
-      "points": false,
+      "points": true,
       "renderer": "flot",
       "seriesOverrides": [],
       "spaceLength": 10,
@@ -1541,7 +1430,7 @@
           "group": [],
           "metricColumn": "Device",
           "rawQuery": true,
-          "rawSql": "SELECT\n  TS AS \"time\",\n  Device AS metric,\n  Pressure *3 / 4\nFROM Xiaomi_Temperature_Sensors_Lviv\nWHERE\n  $__timeFilter(TS)\nORDER BY TS",
+          "rawSql": "SELECT\n  TS AS \"time\",\n  Device AS metric,\n  truncate(Pressure * 3 / 4, 0)\nFROM Xiaomi_Temperature_Sensors_Lviv\nWHERE\n  $__timeFilter(TS)\nORDER BY TS",
           "refId": "A",
           "select": [
             [
@@ -1811,7 +1700,7 @@
           "defaults": {
             "decimals": 0,
             "mappings": [],
-            "max": 100,
+            "max": 150,
             "min": 0,
             "thresholds": [
               {
@@ -1824,7 +1713,7 @@
               }
             ],
             "title": " ",
-            "unit": "percent"
+            "unit": "dB"
           },
           "override": {},
           "values": false
@@ -1976,9 +1865,9 @@
       "datasource": "alex-ocean",
       "fontSize": "100%",
       "gridPos": {
-        "h": 7,
-        "w": 22,
-        "x": 1,
+        "h": 6,
+        "w": 23,
+        "x": 0,
         "y": 40
       },
       "id": 27,
@@ -1993,8 +1882,47 @@
         {
           "alias": "Time",
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "pattern": "Time",
+          "link": false,
+          "pattern": "TS",
           "type": "date"
+        },
+        {
+          "alias": "",
+          "colorMode": "value",
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 0,
+          "mappingType": 1,
+          "pattern": "LinkQuality",
+          "thresholds": [
+            "25",
+            "75"
+          ],
+          "type": "number",
+          "unit": "short"
+        },
+        {
+          "alias": "",
+          "colorMode": "value",
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "Battery",
+          "thresholds": [
+            "50",
+            "80"
+          ],
+          "type": "number",
+          "unit": "short"
         },
         {
           "alias": "",
@@ -2173,7 +2101,7 @@
       "type": "table"
     }
   ],
-  "refresh": "10s",
+  "refresh": "30s",
   "schemaVersion": 20,
   "style": "dark",
   "tags": [],
@@ -2181,7 +2109,7 @@
     "list": []
   },
   "time": {
-    "from": "now-3h",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {
@@ -2201,5 +2129,5 @@
   "timezone": "",
   "title": "Lviv Temperature",
   "uid": "lviv-temperature",
-  "version": 79
+  "version": 88
 }
