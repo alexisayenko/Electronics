@@ -16,7 +16,16 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 2,
-  "links": [],
+  "links": [
+    {
+      "icon": "external link",
+      "tags": [],
+      "title": "Параметры микроклимата в помещениях ГОСТ 30494-2011.",
+      "tooltip": "Параметры микроклимата в помещениях ГОСТ 30494-2011.",
+      "type": "link",
+      "url": "http://www.vashdom.ru/gost/30494-2011/"
+    }
+  ],
   "panels": [
     {
       "cacheTimeout": null,
@@ -480,12 +489,13 @@
     {
       "cacheTimeout": null,
       "colorBackground": false,
+      "colorPostfix": false,
       "colorPrefix": false,
       "colorValue": true,
       "colors": [
-        "#d44a3a",
-        "rgba(237, 129, 40, 0.89)",
-        "#5794F2"
+        "#FADE2A",
+        "#5794F2",
+        "#F2495C"
       ],
       "datasource": "alex-ocean",
       "format": "humidity",
@@ -576,7 +586,7 @@
           ]
         }
       ],
-      "thresholds": "45,55",
+      "thresholds": "40,60",
       "timeFrom": null,
       "timeShift": null,
       "title": "Кухня d65e",
@@ -597,9 +607,9 @@
       "colorPrefix": false,
       "colorValue": true,
       "colors": [
-        "#d44a3a",
-        "rgba(237, 129, 40, 0.89)",
-        "#5794F2"
+        "#FADE2A",
+        "#5794F2",
+        "#FF9830"
       ],
       "datasource": "alex-ocean",
       "format": "humidity",
@@ -690,7 +700,7 @@
           ]
         }
       ],
-      "thresholds": "45,55",
+      "thresholds": "40,60",
       "timeFrom": null,
       "timeShift": null,
       "title": "Столовая b5b2",
@@ -711,9 +721,9 @@
       "colorPrefix": false,
       "colorValue": true,
       "colors": [
-        "#d44a3a",
-        "rgba(237, 129, 40, 0.89)",
-        "#5794F2"
+        "#FADE2A",
+        "#5794F2",
+        "#FF9830"
       ],
       "datasource": "alex-ocean",
       "format": "humidity",
@@ -804,7 +814,7 @@
           ]
         }
       ],
-      "thresholds": "45,55",
+      "thresholds": "40,60",
       "timeFrom": null,
       "timeShift": null,
       "title": "Маленькая b5da",
@@ -823,7 +833,7 @@
       "cacheTimeout": null,
       "colorBackground": false,
       "colorPrefix": false,
-      "colorValue": true,
+      "colorValue": false,
       "colors": [
         "#d44a3a",
         "rgba(237, 129, 40, 0.89)",
@@ -2109,7 +2119,7 @@
     "list": []
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-6h",
     "to": "now"
   },
   "timepicker": {
@@ -2129,5 +2139,5 @@
   "timezone": "",
   "title": "Lviv Temperature",
   "uid": "lviv-temperature",
-  "version": 88
+  "version": 93
 }
