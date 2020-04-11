@@ -59,23 +59,5 @@ void loop() {
   lcd.setCursor(0,1);
   lcd.print(covid19);
 
-  
-//  http.begin("http://68.183.222.243/test.php");
-//  int httpCode = http.GET();                                                                  //Send the request
-//  
-//  if (httpCode > 0) { //Check the returning code     
-//    String payload = http.getString();   //Get the request response payload
-//    lcd.setCursor(0,0);
-//    lcd.print(payload); //Print the response payload
-//  }
-//  else {
-//    lcd.print("code 0");
-//  }
-   
-//  http.end();   //Close connection
-  
-
   delay(5000);
-
-  
 }

@@ -9,9 +9,9 @@ connection
   SCL - D1 (pin 20, gpio5, scl)
 
 arduino code uses two libraries: 
-  ESP8266WiFi - connecting to WiFi
-  ESP8266HTTPClient - making http request to website
-  LiquidCrystal_I2C - working with lcd over i2c
+  ESP8266WiFi - connecting to WiFi (install through IDE menu Sketch->Include Library)
+  ESP8266HTTPClient - making http request to website (https://github.com/esp8266/Arduino/tree/master/libraries/ESP8266HTTPClient)
+  LiquidCrystal_I2C - working with lcd over i2c (https://github.com/marcoschwartz/LiquidCrystal_I2C)
 
 apache
   install packages
