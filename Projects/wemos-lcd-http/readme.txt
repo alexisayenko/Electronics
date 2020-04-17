@@ -8,6 +8,11 @@ connection
   SDA - D2 (pin 19, gpio4, sda)
   SCL - D1 (pin 20, gpio5, scl)
 
+Arduino IDE settings
+  File->Preferences->Additional Boards Manager URLs = https://arduino.esp8266.com/stable/package_esp8266com_index.json
+  Tools->Board->Boards Manager = ESP8266 and install
+  Tools->Board->Generic ESP8266 Module
+
 arduino code uses two libraries: 
   ESP8266WiFi - connecting to WiFi (install through IDE menu Sketch->Include Library)
   ESP8266HTTPClient - making http request to website (https://github.com/esp8266/Arduino/tree/master/libraries/ESP8266HTTPClient)

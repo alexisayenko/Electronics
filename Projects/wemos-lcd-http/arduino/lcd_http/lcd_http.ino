@@ -1,3 +1,4 @@
+
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 #include <LiquidCrystal_I2C.h>
@@ -7,10 +8,6 @@ const char* ssid = "netis";
 const char* password = "password";
 
 HTTPClient http;
-
-void cls(){
-  lcd.setCursor(0,0);
-}
 
 void setup()
 {
@@ -43,15 +40,40 @@ String httpRequest(String url){
   return result;
 }
 
+void printLog(String text){
+  lcd.setCursor(13, 1);
+  lcd.print("___");
+  lcd.setCursor(13, 1);
+  lcd.print(text);
+}
+
+void delay5sec(){
+  printLog("  5"); 
+  delay(1000);
+  printLog("  4");
+  delay(1000);
+  printLog("  3");
+  delay(1000);
+  printLog("  2");
+  delay(1000);
+  printLog("  1");
+  delay(1000);
+  printLog("  0");    
+}
+
 void loop() {
+  printLog(">");
   
   while (WiFi.status() != WL_CONNECTED){
     lcd.clear();
     lcd.print("Not connected");
-    delay(5000);
+    delay5sec();
+    WiFi.begin(ssid, password);
   }
 
+  printLog(">>");
   String temperature = httpRequest("http://68.183.222.243/temperature.php");
+  printLog(">>>");
   String covid19 = httpRequest("http://68.183.222.243/covid-19.php");
 
   lcd.setCursor(0,0);
@@ -59,5 +81,5 @@ void loop() {
   lcd.setCursor(0,1);
   lcd.print(covid19);
 
-  delay(5000);
+  delay5sec();
 }
