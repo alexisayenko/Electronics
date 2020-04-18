@@ -65,7 +65,7 @@ void scrollText(String text){
     return;  
   }
 
-  String line1 = text.substring(0,15);
+  String line1 = text.substring(0,16);
   String line2 = text.substring(16);
 
   lcd.print(line1);
@@ -77,12 +77,12 @@ void scrollText(String text){
     return;
   }
 
-  line2 = line2.substring(0,15);
+  line2 = line2.substring(0,16);
   lcd.print(line2);
   
   delay(750);
 
-  scrollText(text.substring(1));
+  scrollText(text.substring(3));
 }
 
 String previousNews = "";
