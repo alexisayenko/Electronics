@@ -23,7 +23,8 @@ apache
     apache2 
     libapache2-mod-php
     php-mysql
-    php-dom
+    php-dom # for parsing html
+    php-intl # for transliteration
   verify that php mode was enabled in /etc/apache2/mods-enabled/
   verify port 80 is being listened in /etc/apache2/ports.conf
   restart apache
@@ -31,4 +32,4 @@ apache
 
 php page
   uses simple_html_dom.php library (https://sourceforge.net/projects/simplehtmldom/files/latest/download) 
-  
+   uncomment extension=intl in the php.ini # for transliteration  
