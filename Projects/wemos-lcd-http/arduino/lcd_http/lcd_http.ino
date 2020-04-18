@@ -42,7 +42,7 @@ String httpRequest(String url){
 
 void printLog(String text){
   lcd.setCursor(13, 1);
-  lcd.print("___");
+  lcd.print("   ");
   lcd.setCursor(13, 1);
   lcd.print(text);
 }
@@ -62,7 +62,6 @@ void delay5sec(){
 }
 
 void loop() {
-  printLog(">");
   
   while (WiFi.status() != WL_CONNECTED){
     lcd.clear();
@@ -71,10 +70,11 @@ void loop() {
     WiFi.begin(ssid, password);
   }
 
-  printLog(">>");
+  printLog(">");
   String temperature = httpRequest("http://68.183.222.243/temperature.php");
-  printLog(">>>");
+  printLog(">>");
   String covid19 = httpRequest("http://68.183.222.243/covid-19.php");
+  printLog(">>>");
 
   lcd.setCursor(0,0);
   lcd.print(temperature);
