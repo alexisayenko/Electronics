@@ -10,13 +10,15 @@ connection
 
 Arduino IDE settings
   File->Preferences->Additional Boards Manager URLs = https://arduino.esp8266.com/stable/package_esp8266com_index.json
-  Tools->Board->Boards Manager = ESP8266 and install
-  Tools->Board->Generic ESP8266 Module
+  Tools->Board->Boards Manager = ESP8266 and install - configuration for esp8266 boards
+  Tools->Board->Generic ESP8266 Module - in order to see esp8622wifi library in the Sketch menu
+  Sketch->Include Library->Add .ZIP library - add all libraries in the folder
 
-arduino code uses two libraries: 
+arduino code uses the following libraries: 
   ESP8266WiFi - connecting to WiFi (install through IDE menu Sketch->Include Library)
   ESP8266HTTPClient - making http request to website (https://github.com/esp8266/Arduino/tree/master/libraries/ESP8266HTTPClient)
   LiquidCrystal_I2C - working with lcd over i2c (https://github.com/marcoschwartz/LiquidCrystal_I2C)
+  LCD_1602_RUS_ALL - work with Cyrillic (https://github.com/ssilver2007/LCD_1602_RUS_ALL)
 
 apache
   install packages
