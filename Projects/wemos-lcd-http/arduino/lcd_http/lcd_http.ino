@@ -1,3 +1,9 @@
+// Code for ESP32-CAM
+
+// OI: Update I2C library. 
+// add Wire.begin(2, 14); into void LiquidCrystal_I2C::init_priv()
+
+
 #include <HTTPClient.h>
 
 #define _LCD_TYPE 1
