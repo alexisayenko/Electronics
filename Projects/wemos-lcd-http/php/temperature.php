@@ -4,6 +4,8 @@ $username = "grafana";
 $password = "Isayenko!1";
 $dbname = "zigbee2mqtt";
 
+$degreeChar = chr(223);
+
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
 // Check connection
@@ -16,7 +18,7 @@ $sql = "select Temperature from Xiaomi_Temperature_Sensors where device like '%c
 $temperature = $conn->query($sql)->fetch_assoc()["Temperature"];
 $sql = "select Humidity from Xiaomi_Temperature_Sensors where device like '%cae5' ORDER BY id DESC LIMIT 1;";
 $humidity = $conn->query($sql)->fetch_assoc()["Humidity"];
-echo $temperature . "C/" . $humidity . "%";
+echo $temperature . $degreeChar . $humidity . "%";
 
 echo " ";
 
@@ -25,7 +27,7 @@ $sql = "select Temperature from Xiaomi_Temperature_Sensors where device like '%e
 $temperature = $conn->query($sql)->fetch_assoc()["Temperature"];
 $sql = "select Humidity from Xiaomi_Temperature_Sensors where device like '%ef30' ORDER BY id DESC LIMIT 1;";
 $humidity = $conn->query($sql)->fetch_assoc()["Humidity"];
-echo $temperature . "C/" . $humidity . "%";
+echo $temperature . $degreeChar . $humidity . "%";
 
 $conn->close();
 ?>
