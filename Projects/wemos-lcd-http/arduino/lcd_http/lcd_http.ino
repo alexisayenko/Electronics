@@ -108,7 +108,7 @@ void loop() {
   lcd.setCursor(0,1);
   lcd.print(covid19);
 
-  delayLog(5);
+  delayLog(9);
 
   if (previousNews != news){
     previousNews = news;
