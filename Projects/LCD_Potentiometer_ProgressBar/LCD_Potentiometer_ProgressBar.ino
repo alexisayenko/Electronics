@@ -102,26 +102,24 @@ void displayProgressBar()
     lcd.print(" ");
 }
 
-void displaySmoothProgressBar()
-{
-  int value = analogRead(pinPotentiometer);
-
-  int percentage = value * 100 / maxAdcValue;
-  int barsNumber = percentage / 10;
-
+void printTopValue(int value){
   lcd.setCursor(0, 0);
-  lcd.print(barsNumber);
+  lcd.print(value);
   lcd.print("   ");
+}
 
+void printBottomValue(int value){
   lcd.setCursor(0, 1);
-  lcd.print(percentage);
+  lcd.print(value);
 
-  // Cleanning old bars
-  if (percentage < 100)
+  // Cleanning old digits
+  if (value < 100)
     lcd.print(" ");
-  if (percentage < 10)
+  if (value < 10)
     lcd.print(" ");
+}
 
+void printBars(int barsNumber, int percentage){
   lcd.setCursor(3, 1);
 
   // Print the progress bar of barChars (char from memory at index 0)
@@ -140,6 +138,20 @@ void displaySmoothProgressBar()
   // Cleanning the rest of the line
   for (int i = barsNumber; i < 20; i++)
     lcd.print(" ");
+}
+
+void displaySmoothProgressBar()
+{
+  int value = analogRead(pinPotentiometer);
+
+  int percentage = value * 100 / maxAdcValue;
+  int barsNumber = percentage / 10;
+
+  printTopValue(barsNumber);
+
+  printBottomValue(percentage);
+
+  printBars(barsNumber, percentage);
 }
 
 void setup()
