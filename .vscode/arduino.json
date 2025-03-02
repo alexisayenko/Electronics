@@ -1,7 +1,7 @@
 {
     "sketch": "Projects/LCD_Potentiometer_ProgressBar/LCD_Potentiometer_ProgressBar.ino",
     "port": "/dev/cu.usbmodem-01",
-    "board": "esp32:esp32:esp32s2",
+    "board": "esp32:esp32s2",
     "output": "../build",
     "cli": "/opt/homebrew/bin/arduino-cli"
 }
