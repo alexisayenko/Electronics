@@ -5,7 +5,7 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "/Users/aisayenko/Library/Arduino15/packages/esp32/hardware/esp32/**",
-                "/Users/aisayenko/Library/Arduino15/packages/esp32/tools/**",
+                "/Users/aisayenko/Library/Arduino15/packages/esp32/tools/**"
             ],
             "defines": [
                 "ESP32",
