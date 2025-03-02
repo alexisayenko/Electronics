@@ -15,7 +15,6 @@ const int maxAdcValue = 8191;
 const int barsNumberMax = 10;
 int oneBarValue = maxAdcValue / barsNumberMax;
 
-
 std::array<byte, 8> barChar20 = {
   0b10000,
   0b10000,
@@ -107,12 +106,11 @@ void displayProgressBar(){
 
 void displaySmoothProgressBar(){
   int value = analogRead(pinPotentiometer);
-  int barsNumber = value / oneBarValue;
  
   int percentage  = value * 100 / maxAdcValue;
-
-  if (percentage == 100)
-    barsNumber++;;
+  int barsNumber = percentage / 10;
+  if (percentag % 10 == 0)
+    barsNumber++;
 
    lcd.setCursor(0, 0);
    lcd.print(value);
@@ -140,7 +138,7 @@ void displaySmoothProgressBar(){
   int fractionBarsIndex = b / 2;
 
   if (b > 0)
-    lcd.write(byte(fractionBars));
+    lcd.write(byte(fractionBarsIndex));
    
    // Cleanning the rest of the line
    for (int i = barsNumber; i < 20; i++)
