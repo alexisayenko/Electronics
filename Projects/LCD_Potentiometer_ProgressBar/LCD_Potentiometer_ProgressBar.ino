@@ -133,27 +133,41 @@ void printBottomLabel(int value)
 
 void printBars(int percentage)
 {
-  if (barsNumberMax != 10 && barsNumberMax != 20)
+  int barsNumber = percentage * barsNumberMax / 100;
+
+  // Calculate the amount of fraction bars
+  int a = percentage % barsNumberMax;
+  int c = barsNumberMax * 5;
+  int b = -1;
+  int fractionBarsIndex = -1;
+
+  if (barsNumberMax == 10)
   {
-    lcd.print("Error: barsNumberMax must be 10 or 20");
+    b = a % (100 / c) == 0 ? a : a + 1;
+    fractionBarsIndex = b / (100 / c);
+  }
+  else if (barsNumberMax == 20)
+  {
+    fractionBarsIndex = percentage % 5;
+  }
+  else
+  {
+    lcd.print("Bars number max is not supported");
     return;
   }
 
-  int barsNumber = percentage * barsNumberMax / 100;
-  int fractionBarsIndex = (percentage * 5 / barsNumberMax) % 5;
-
   lcd.setCursor(progressBarStartCol, progressBarStartRow);
 
-  // Print full bars
-  for (int i = 0; i < barsNumber; i++)
-    lcd.write(byte(5));
+  // Print the progress bar of barChars (char from memory at index 0)
+  if (barsNumber > 0)
+    for (int i = 0; i < barsNumber; i++)
+      lcd.write(byte(5));
 
-  // Print fractional bars
   if (fractionBarsIndex > 0)
     lcd.write(byte(fractionBarsIndex));
 
-  // Cleanning rest of the line
-  for (int i = barsNumber + (fractionBarsIndex > 0 ? 1 : 0); i < lcdCols - 1; i++)
+  // Cleanning the rest of the line
+  for (int i = barsNumber; i < lcdCols - 1; i++)
     lcd.print(" ");
 }
 
@@ -166,7 +180,7 @@ void displaySmoothProgressBar()
 
   printTopLabel(value, barsNumber);
 
-  printBottomLabel(percentage);
+  printBottomLabel(12345);
 
   printBars(percentage);
 }
