@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "name": "Arduino-ESP32S2",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/Users/aisayenko/Library/Arduino15/packages/esp32/hardware/esp32/**",
+                "/Users/aisayenko/Library/Arduino15/packages/esp32/tools/**",
+            ],
+            "defines": [
+                "ESP32",
+                "ESP_PLATFORM",
+                "ARDUINO=10810"
+            ],
+"compilerPath": "/Users/aisayenko/Library/Arduino15/packages/esp32/tools/esp-x32/2405/bin/xtensa-esp32s2-elf-gcc",
+            "intelliSenseMode": "gcc-arm64",
+            "cStandard": "c11",
+            "cppStandard": "c++17"
+        }
+    ],
+    "version": 4
+}
