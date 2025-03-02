@@ -77,7 +77,6 @@ std::map<int, std::array<byte, 8>> barsFractionMap = {
   {5, barChar100}
 };
 
-
 // 0x27 is a standard I2C address for LCDs
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
@@ -108,13 +107,13 @@ void displayProgressBar(){
 
 void displaySmoothProgressBar(){
   int value = analogRead(pinPotentiometer);
-  int barsNumber = value / oneBarValue - 1;
+  int barsNumber = value / oneBarValue;
  
   int percentage  = value * 100 / maxAdcValue;
 
-  int a = percentage % 10;
-  int b = a % 2 == 0 ? a : a + 1;
-  
+  if (percentage == 100)
+    barsNumber++;;
+
    lcd.setCursor(0, 0);
    lcd.print(value);
    lcd.print("   "); 
@@ -122,7 +121,7 @@ void displaySmoothProgressBar(){
    lcd.setCursor(0, 1);
    lcd.print(percentage);
    
-   // cleanning old bars
+   // Cleanning old bars
   if (percentage < 100)
     lcd.print(" "); 
   if (percentage < 10)
@@ -130,15 +129,20 @@ void displaySmoothProgressBar(){
 
    lcd.setCursor(3, 1); 
 
-  // print the progress bar of barChars (char from memory at index 0)
+  // Print the progress bar of barChars (char from memory at index 0)
   if (barsNumber > 0)
-    for (int i = 0; i < barsNumber; i++)
+    for (int i = 0; i < barsNumber - 1; i++)
       lcd.write(byte(5));
-   
+
+  // Calculate the amount of fraction bars
+  int a = percentage % 10;
+  int b = a % 2 == 0 ? a : a + 1;
+  int fractionBarsIndex = b / 2;
+
   if (b > 0)
-    lcd.write(byte(b / 2));
+    lcd.write(byte(fractionBars));
    
-   // cleanning the rest of the line
+   // Cleanning the rest of the line
    for (int i = barsNumber; i < 20; i++)
       lcd.print(" ");
 }
@@ -148,7 +152,7 @@ void setup() {
     lcd.init();
     lcd.backlight();
 
-    // store bar char in memory at index  0
+    // Store bar char in memory at index  0
     lcd.createChar(1, barChar20.data());
     lcd.createChar(2, barChar40.data());
     lcd.createChar(3, barChar60.data());
