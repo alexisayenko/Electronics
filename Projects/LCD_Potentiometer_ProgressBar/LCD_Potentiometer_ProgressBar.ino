@@ -67,7 +67,6 @@ std::array<byte, 8> barChar100 = {
   0b11111
 };
 
-
 std::map<int, std::array<byte, 8>> barsFractionMap = {
   {1, barChar20},
   {2, barChar40},
@@ -109,11 +108,11 @@ void displaySmoothProgressBar(){
  
   int percentage  = value * 100 / maxAdcValue;
   int barsNumber = percentage / 10;
-  if (percentag % 10 == 0)
-    barsNumber++;
+//  if (percentage > 0 && percentage % 10 == 0)
+//    barsNumber++;
 
    lcd.setCursor(0, 0);
-   lcd.print(value);
+   lcd.print(barsNumber);
    lcd.print("   "); 
 
    lcd.setCursor(0, 1);
@@ -129,7 +128,7 @@ void displaySmoothProgressBar(){
 
   // Print the progress bar of barChars (char from memory at index 0)
   if (barsNumber > 0)
-    for (int i = 0; i < barsNumber - 1; i++)
+    for (int i = 0; i < barsNumber; i++)
       lcd.write(byte(5));
 
   // Calculate the amount of fraction bars
